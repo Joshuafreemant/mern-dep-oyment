@@ -1,0 +1,25 @@
+initialize new go app
+go mod init github.com/Joshuafreemant/go-josh
+
+install fiber
+go get github.com/gofiber/fiber/v2
+
+install cors
+go get github.com/gofiber/fiber/v2/middleware/cors
+
+to use env files
+go get github.com/joho/godotenv
+
+install mongodb
+go get go.mongodb.org/mongo-driver/mongo
+
+add bcrypt
+go get golang.org/x/crypto/bcrypt
+
+add jwt
+go get github.com/golang-jwt/jwt/v5
+
+
+send email
+go get github.com/go-gomail/gomail
+
