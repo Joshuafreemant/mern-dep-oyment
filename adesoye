@@ -1,0 +1,53 @@
+
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClxijTLFtuGs9tGkm8IIuVMRVdCYpd31NAQi24tTXW8YpOZEmqzSntnz+QMXSF3DROue78WrigcISy85+S0bHqlWeFbZW3pfAQnaB95v8yY/ra/zPw8naV+9bs0iTqAgw3DgOyTWodt/pXGZxAwWAb4hCFu/r4IIl2vADJnGXVjp279335PO1GuaDwBnZJWcFerF66eKHvpl/y3PDyk7UcG1MyiKASjsy4zKJgEP3CnK/85sPwg5uKljUGLBQ1PduTQEJD7wc5R+qS+5sDKK/kRlw6lLkLNYh71+z+ahqiPbc3guzb+8sZ/1odq3BPrPKvXI6rxHcQVc9Q1an/V+rN rsa-key-20240112
+
+secret ket:adesope
+ssh name: rsa-key-20240112
+
+195.35.14.31
+TS4w69Zg#@qjTd
+root
+Adesope@1
+Adesope@2
+server {
+  listen 80;
+
+  location / {
+        root /var/www/adesoye;
+        index  index.html index.htm;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        try_files $uri $uri/ /index.html;
+  }
+
+  location /api {
+	proxy_pass http://195.35.14.31:8800
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        try_files $uri $uri/ /index.html;
+  }
+}
+
+ location / {
+        root /var/www/alumni/alumni_app/;
+        index  index.html index.htm;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        try_files $uri $uri/ /index.html;
+  }
+
+
+ln -s /etc/nginx/sites-available/adesoye /etc/nginx/sites-enabled/adesoye
+nano /etc/nginx/sites-available/alumni
+
+cp -r build/* /var/www/adesoye/alumni_app
