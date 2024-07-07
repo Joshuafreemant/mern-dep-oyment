@@ -1,0 +1,151 @@
+apt autoremove
+apt clean all && apt update
+apt install nginx
+cd /var/www , then ls to see the content
+
+rm -rf html to clear content
+
+mkdir adesoye
+nano adesoye/index.html
+cd adesoye....to check the newly created index.html
+you can nano to write in the index.html
+
+nano /etc/nginx/sites-available/default(rm this file rm /etc/nginx/sites-available/default)
+
+cd /etc/nginx/sites-enabled(then ls)
+
+rm default
+
+create your configuration
+nano /etc/nginx/sites-available/adesoye
+
+server {
+  listen 80;
+
+  location / {
+        root /var/www/adesoye;
+        index  index.html index.htm;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        try_files $uri $uri/ /index.html;
+  }
+}
+
+ln -s /etc/nginx/sites-available/adesoye /etc/nginx/sites-enabled/adesoye
+
+cd /root
+
+nginx -t
+
+systemctl start nginx
+
+systemctl status
+
+to see the index.html file on browser....reload vps
+
+apt install git
+
+mkdir adesoye(on root)
+
+cd adesoye
+
+git clone https://github.com/Joshuafreemant/Adesoye-community.git .
+
+nano /etc/nginx/sites-available/adesoye
+
+server {
+  listen 80;
+  server_name acoalumni.com www.acoalumni.com;
+  location / {
+        root /var/www/adesoye/alumni_app;
+        index  index.html index.htm;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        try_files $uri $uri/ /index.html;
+  }
+
+   location /api {
+        proxy_pass http://195.35.14.31:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+  }
+}
+
+after changing the nginx setup...reload the nginx (nginx -t, systemctl reload nginx)
+
+apt install nodejs
+apt install npm
+
+cd alumni_backend
+npm install
+nano .env(add your env)
+node index.js(if any error here, try to update nodejs)...apt autoremove first
+https://netshopisp.medium.com/how-to-install-nodejs-any-version-on-ubuntu-22-04-server-f8b25395c531
+
+npm i -g pm2
+
+pm2 start --name alumni_backend index.js
+
+pm2 startup ubuntu
+
+pm2 status
+
+
+now on to the react app deployment
+cd ..alumni_app
+npm install
+nano .env(add your env)
+npm run build
+
+rm -rf /var/www/adesoye/*
+mkdir /var/www/adesoye/alumni_app
+cp -r build/* /var/www/adesoye/alumni_app
+
+
+nano /etc/nginx/sites-available/adesoye
+
+server {
+  listen 80;
+  server_name acoalumni.com www.acoalumni.com;
+  location / {
+        root /var/www/adesoye/alumni_app;
+        index  index.html index.htm;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        try_files $uri $uri/ /index.html;
+  }
+
+}
+
+server {
+  listen 80;
+  server_name acoalumni.com;
+  location /api {
+        proxy_pass http://195.35.14.31:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+  }
+
+}
+nginx -t
+
+systemctl reload nginx
+
+
+apt install certbot python3-certbot-nginx
+certbot --nginx -d example.com -d www.example.com
